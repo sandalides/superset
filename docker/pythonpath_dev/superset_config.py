@@ -25,6 +25,25 @@ import os
 
 from celery.schedules import crontab
 from flask_caching.backends.filesystemcache import FileSystemCache
+from security  import  OIDCSecurityManager
+from flask_appbuilder.security.manager import AUTH_OID
+
+'''
+---------------------------KEYCLOACK ----------------------------
+'''
+curr  =  os.path.abspath(os.getcwd())
+AUTH_TYPE = AUTH_OID
+SECRET_KEY = 'DRZnOpapfCAkNRyyfWqa+g+71m1AhBloQGYpDjMXZYwIk/9DH3pt9WRF'
+OIDC_CLIENT_SECRETS =  curr + '/docker/pythonpath_dev/client_secrets.json'
+OIDC_ID_TOKEN_COOKIE_SECURE = False
+OIDC_REQUIRE_VERIFIED_EMAIL = False
+CUSTOM_SECURITY_MANAGER = OIDCSecurityManager
+AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION_ROLE = 'Admin'
+
+'''
+--------------------------------------------------------------
+'''
 
 logger = logging.getLogger()
 
@@ -113,3 +132,11 @@ try:
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+# Enable Native Filters
+FEATURE_FLAGS = {
+    "DASHBOARD_NATIVE_FILTERS": True,
+}
+
+# Migrate Legacy Filters
+#superset native-filters upgrade --all
